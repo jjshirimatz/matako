@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b57d0">
+<title>PIVONETA Translator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root{--primary:#0b57d0;--surface:#fff;--background:#f8f9fa;--text-main:#1f1f1f;--text-sub:#5f6368;--border:#c4c7c5;--accent:#fbbc04;--danger:#b3261e;--soft:#f0f4f9}
+*{box-sizing:border-box}body{font-family:Roboto,Arial,sans-serif;background:var(--background);margin:0;color:var(--text-main);-webkit-tap-highlight-color:transparent}
+button,select,textarea{font:inherit}button{touch-action:manipulation}.header{background:var(--surface);color:var(--primary);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px #00000014;position:sticky;top:0;z-index:10;gap:10px}
+.brand-name{font-size:22px;font-weight:900;letter-spacing:1px;white-space:nowrap}.header-actions{display:flex;align-items:center;gap:8px}
+.privacy-top-btn,.swap-btn{border:1px solid var(--border);background:var(--soft);color:var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.privacy-top-btn{color:var(--text-sub);width:40px;height:40px;border-radius:50%}.ui-lang-selector{background:var(--soft);border:1px solid var(--border);border-radius:22px;padding:9px 10px;font-size:13px;outline:none;color:var(--text-main)}
+.container{width:92%;max-width:480px;margin:14px auto;padding-bottom:30px}.card{background:var(--surface);padding:16px;border-radius:24px;box-shadow:0 2px 10px #0000000d;margin-bottom:14px;border:1px solid #f0f0f0}
+.lang-selector-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}.translation-select{padding:12px 14px;border:1px solid var(--border);border-radius:14px;font-size:15px;flex:1;min-width:0;outline:none;background:#fff;color:var(--text-main)}
+.swap-btn{border-radius:50%;width:42px;height:42px}.input-area{position:relative}textarea{width:100%;height:118px;padding:10px 12px;border:0;font-size:17px;outline:none;resize:vertical;min-height:90px;max-height:240px;background:transparent;color:var(--text-main);line-height:1.45}
+.char-counter{text-align:right;font-size:11px;color:#80868b;padding:0 12px 6px}.output-box{margin-top:4px;padding:16px;background:var(--soft);border-radius:18px;min-height:64px;font-size:17px;color:var(--primary);font-weight:500;overflow-wrap:anywhere;line-height:1.45;white-space:pre-wrap}
+.action-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:6px}.btn-main{background:var(--primary);color:#fff;border:0;padding:13px 16px;border-radius:30px;font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;justify-content:center;font-size:15px;min-height:48px}
+.btn-main:disabled{opacity:.65;cursor:wait}.btn-icon{background:none;border:0;color:var(--text-sub);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px;min-width:40px;min-height:40px}.btn-icon .material-icons{font-size:27px}.icon-group{display:flex;align-items:center;gap:2px}
+.phrase-section{margin-bottom:12px;padding:0 2px}.phrase-label{font-size:14px;font-weight:700;color:var(--text-sub);margin-bottom:10px;display:block}.phrase-container{display:flex;flex-wrap:wrap;gap:8px}.phrase-chip{background:#fff;border:1px solid var(--border);padding:9px 14px;border-radius:18px;font-size:14px;cursor:pointer;color:var(--text-main)}.phrase-chip:active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.section-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;font-weight:700;color:var(--text-sub);font-size:15px;gap:8px}.section-title{display:flex;align-items:center;gap:6px}.text-link-btn{background:none;border:0;cursor:pointer;color:var(--danger);font-size:13px;padding:6px 0}
+.item-list{max-height:220px;overflow-y:auto}.list-item{padding:12px;border-bottom:1px solid #f1f3f4;display:flex;flex-direction:column;gap:4px;cursor:pointer;border-radius:10px}.list-item:last-child{border-bottom:0}.list-item:active{background:var(--soft)}.orig-text{font-size:13px;color:var(--text-sub);line-height:1.4}.tran-text{font-size:16px;color:var(--primary);font-weight:700;line-height:1.4}.empty-state{text-align:center;color:#777;font-size:13px;padding:22px 8px 8px}
+.privacy-btn-container{text-align:center;margin:24px 0 20px}.privacy-btn{background:var(--soft);color:var(--primary);border:1px solid var(--border);padding:12px 18px;border-radius:24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%}
+.modal{display:none;position:fixed;z-index:1001;inset:0;background:#0008;backdrop-filter:blur(3px);padding:16px;overflow-y:auto}.modal.open{display:block}.modal-content{background:#fff;margin:10vh auto 20px;padding:22px;width:100%;max-width:480px;max-height:78vh;border-radius:24px;overflow-y:auto;box-shadow:0 8px 30px #00000029}.modal-content h2,.modal-content h3{margin-top:0;color:var(--primary)}.modal-content p,.modal-content li{line-height:1.6;font-size:14px}.dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}.secondary-btn{border:0;background:none;cursor:pointer;color:var(--text-sub);font-weight:700;padding:10px}.status{font-size:13px;color:var(--text-sub);padding:6px 2px;min-height:18px}.status.error{color:var(--danger)}.status.success{color:#137333}
+@media(max-width:380px){.brand-name{font-size:19px}.btn-main{padding:12px 10px;font-size:13px}.phrase-chip{font-size:13px;padding:8px 11px}.container{width:94%}.card{padding:13px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand-name">PIVONETA</div>
+  <div class="header-actions">
+    <button class="privacy-top-btn" id="privacyTop" type="button" aria-label="Privacy Policy"><i class="material-icons">shield</i></button>
+    <select class="ui-lang-selector" id="uiLang" aria-label="Interface language">
+      <option value="sw">🇹🇿 SW</option><option value="en">🇺🇸 EN</option>
+    </select>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card" aria-label="Translator">
+    <div class="lang-selector-row">
+      <select id="langOption" class="translation-select" aria-label="Translation direction">
+        <option value="en-sw">Kiingereza ➔ Kiswahili</option>
+        <option value="sw-en">Kiswahili ➔ Kiingereza</option>
+      </select>
+      <button class="swap-btn" id="swapBtn" type="button" aria-label="Swap languages"><i class="material-icons">swap_horiz</i></button>
+    </div>
+    <div class="input-area">
+      <textarea id="userInput" maxlength="500" placeholder="Andika hapa..." aria-label="Text to translate"></textarea>
+      <div class="char-counter" id="charCount" aria-live="polite">0 / 500</div>
+    </div>
+    <div class="output-box" id="resultText" aria-live="polite" aria-atomic="true">Matokeo yataonekana hapa...</div>
+    <div class="status" id="statusMessage" role="status"></div>
+    <div class="action-row">
+      <button class="btn-icon" id="clearBtn" type="button" aria-label="Clear text"><i class="material-icons">delete_outline</i></button>
+      <button class="btn-main" id="translateBtn" type="button"><i class="material-icons">translate</i><span>TAFSIRI</span></button>
+      <div class="icon-group">
+        <button class="btn-icon" id="favBtn" type="button" aria-label="Save favorite"><i class="material-icons" id="favIcon">star_border</i></button>
+        <button class="btn-icon" id="copyBtn" type="button" aria-label="Copy translation"><i class="material-icons" id="copyIcon">content_copy</i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="phrase-section">
+    <span class="phrase-label" id="phraseLabel">Maneno ya Haraka</span>
+    <div class="phrase-container" id="phraseContainer"></div>
+  </section>
+
+  <section class="card" id="favCard" hidden>
+    <div class="section-header"><span class="section-title"><i class="material-icons" style="color:var(--accent)">star</i><span id="textFav">Unayopenda</span></span><button class="text-link-btn" id="btnClearFav" type="button">Futa Yote</button></div>
+    <div id="favContainer" class="item-list"></div>
+  </section>
+
+  <section class="card">
+    <div class="section-header"><span class="section-title"><i class="material-icons">history</i><span id="textHist">Historia</span></span><button class="text-link-btn" id="btnClearHist" type="button">Futa Historia</button></div>
+    <div id="historyContainer" class="item-list"></div>
+  </section>
+
+  <div class="privacy-btn-container"><button class="privacy-btn" id="privacyBottom" type="button"><i class="material-icons">security</i><span id="textPrivacy">PIVONETA Privacy &amp; Data Safety</span></button></div>
+</main>
+
+<div id="pModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="policyTitle">
+  <div class="modal-content" id="privacyContent"></div>
+</div>
+<div id="confirmDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal-content">
+    <h3 id="confirmTitle">Futa Historia?</h3><p id="confirmMsg">Je, una uhakika unataka kufuta historia?</p>
+    <div class="dialog-actions"><button class="secondary-btn" id="btnCancel" type="button">GHAIRI</button><button class="btn-main" id="confirmBtn" type="button" style="flex:0 0 auto;background:#b3261e">FUTA YOTE</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const MAX_HISTORY = 50;
+  const STORAGE = { history: 'pivoneta_history_v1', favorites: 'pivoneta_favorites_v1' };
+  let currentUILang = 'sw';
+  let currentTranslation = { orig: '', tran: '', mode: 'en-sw' };
+  let translationRequestId = 0;
+
+  const $ = id => document.getElementById(id);
+  const ui = {
+    sw: {
+      placeholder: 'Andika hapa...', resultDefault: 'Matokeo yataonekana hapa...', translating: 'Inatafsiri...',
+      errorText: 'Tafsiri haikufanikiwa. Angalia intaneti kisha ujaribu tena.',
+      emptyInput: 'Andika maandishi ya kutafsiri kwanza.', btnTranslate: 'TAFSIRI', history: 'Historia',
+      favs: 'Unayopenda', clearAll: 'Futa Yote', clearHist: 'Futa Historia', privacyLink: 'PIVONETA Privacy & Data Safety',
+      confirmTitle: 'Futa Historia?', confirmMsg: 'Una uhakika unataka kufuta historia ya PIVONETA?',
+      btnCancel: 'GHAIRI', btnDelete: 'FUTA YOTE', phraseLabel: 'Maneno ya Haraka',
+      emptyHistory: 'Hakuna historia bado', emptyFavs: 'Hakuna vipendwa bado', copied: 'Imenakiliwa.',
+      phrases: ['Habari','U hali gani?','Asante','Nimekukumbuka','Habari za asubuhi','Nakupenda','Uko wapi?','Bei gani?'],
+      policyTitle: 'Sera ya Faragha ya PIVONETA',
+      policy: `<p><strong>Maandishi ya tafsiri:</strong> Unapotumia kipengele cha tafsiri, maandishi unayoingiza hutumwa kupitia intaneti kwa huduma ya tafsiri ya nje ili kutengeneza matokeo. Epuka kuingiza taarifa nyeti au za siri.</p>
+      <p><strong>Historia na vipendwa:</strong> Historia ya tafsiri na vipendwa huhifadhiwa kwenye hifadhi ya ndani ya kifaa/kivinjari chako. Unaweza kuvifuta ndani ya app; kufuta data ya app au kivinjari kunaweza pia kuviondoa.</p>
+      <p><strong>Huduma za watu wengine:</strong> Tafsiri hutegemea huduma ya nje. Mtoa huduma huyo anaweza kupokea na kuchakata maandishi unayotuma kwa mujibu wa sera na masharti yake mwenyewe.</p>
+      <p><strong>Usalama na faragha:</strong> Usitumie app hii kutuma taarifa za siri. Jinsi data inavyoshughulikiwa inaweza pia kutegemea kifaa chako na huduma ya tafsiri inayotumika.</p>
+      <p><strong>Wasiliana nasi:</strong> Kwa maswali kuhusu faragha, wasiliana nasi kupitia <a href="mailto:dadyplusdeveloper@gmail.com">dadyplusdeveloper@gmail.com</a>.</p>`,
+      understood: 'NAELEWA'
+    },
+    en: {
+      placeholder: 'Type here...', resultDefault: 'Translation results appear here...', translating: 'Translating...',
+      errorText: 'Translation failed. Check your internet connection and try again.',
+      emptyInput: 'Enter text to translate first.', btnTranslate: 'TRANSLATE', history: 'History',
+      favs: 'Favorites', clearAll: 'Clear All', clearHist: 'Clear History', privacyLink: 'PIVONETA Privacy & Data Safety',
+      confirmTitle: 'Clear history?', confirmMsg: 'Are you sure you want to clear PIVONETA history?',
+      btnCancel: 'CANCEL', btnDelete: 'DELETE ALL', phraseLabel: 'Quick Phrases',
+      emptyHistory: 'No history yet', emptyFavs: 'No favorites yet', copied: 'Copied.',
+      phrases: ['Hello','How are you?','Thank you','I miss you','Good morning','I love you','Where are you?','How much?'],
+      policyTitle: 'PIVONETA Privacy Policy',
+      policy: `<p><strong>Translation text:</strong> When you use translation, the text you enter is sent over the internet to an external translation service to generate results. Avoid entering sensitive or confidential information.</p>
+      <p><strong>History and favorites:</strong> Translation history and favorites are stored in your device/browser local storage. You can clear them in the app; clearing app or browser data may also remove them.</p>
+      <p><strong>Third-party services:</strong> Translation relies on an external service. That provider may receive and process the text you submit under its own terms and privacy policy.</p>
+      <p><strong>Security and privacy:</strong> Do not use the app to submit confidential information. Data handling may also depend on your device and the translation service being used.</p>
+      <p><strong>Contact us:</strong> For privacy questions, email <a href="mailto:dadyplusdeveloper@gmail.com">dadyplusdeveloper@gmail.com</a>.</p>`,
+      understood: 'I UNDERSTAND'
+    }
+  };
+
+  function safeRead(key) {
+    try {
+      const value = localStorage.getItem(key);
+      if (!value) return [];
+      const parsed = JSON.parse(value);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(x => x && typeof x.orig === 'string' && typeof x.tran === 'string');
+    } catch (_) {
+      return [];
+    }
+  }
+  function safeWrite(key, list) {
+    try { localStorage.setItem(key, JSON.stringify(list)); return true; }
+    catch (_) { showStatus(currentUILang === 'sw' ? 'Imeshindikana kuhifadhi kwenye kifaa.' : 'Could not save data on this device.', true); return false; }
+  }
+  function showStatus(message = '', isError = false) {
+    const el = $('statusMessage');
+    el.textContent = message;
+    el.className = 'status' + (isError ? ' error' : message ? ' success' : '');
+  }
+  function defaultResult(text) {
+    const t = ui[currentUILang];
+    return [t.resultDefault, ui.sw.resultDefault, ui.en.resultDefault, t.translating, ui.sw.translating, ui.en.translating, t.errorText, ui.sw.errorText, ui.en.errorText].includes(text);
+  }
+  function setResult(text) { $('resultText').textContent = text; }
+  function updateCharCount() { $('charCount').textContent = `${$('userInput').value.length} / 500`; }
+  function renderPhrases() {
+    const container = $('phraseContainer');
+    container.replaceChildren();
+    ui[currentUILang].phrases.forEach(phrase => {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'phrase-chip'; btn.textContent = phrase;
+      btn.addEventListener('click', () => { $('userInput').value = phrase; updateCharCount(); $('userInput').focus(); });
+      container.appendChild(btn);
+    });
+  }
+  function renderList(key, containerId) {
+    const list = safeRead(key);
+    const isFav = key === STORAGE.favorites;
+    const container = $(containerId);
+    if (isFav) $('favCard').hidden = list.length === 0;
+    container.replaceChildren();
+    if (!list.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = isFav ? ui[currentUILang].emptyFavs : ui[currentUILang].emptyHistory;
+      container.appendChild(empty);
+      return;
+    }
+    list.forEach(item => {
+      const row = document.createElement('button');
+      row.type = 'button'; row.className = 'list-item'; row.style.width = '100%'; row.style.textAlign = 'left'; row.style.background = 'transparent'; row.style.borderTop = '0'; row.style.borderLeft = '0'; row.style.borderRight = '0';
+      const orig = document.createElement('span'); orig.className = 'orig-text'; orig.textContent = item.orig;
+      const tran = document.createElement('span'); tran.className = 'tran-text'; tran.textContent = item.tran;
+      row.append(orig, tran);
+      row.addEventListener('click', () => {
+        $('userInput').value = item.orig;
+        $('langOption').value = item.mode || 'en-sw';
+        setResult(item.tran);
+        currentTranslation = { orig: item.orig, tran: item.tran, mode: item.mode || 'en-sw' };
+        updateCharCount(); showStatus('');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateFavoriteIcon();
+      });
+      container.appendChild(row);
+    });
+  }
+  function saveItem(key, item) {
+    if (!item.orig.trim() || !item.tran.trim()) return;
+    let list = safeRead(key);
+    list = list.filter(x => !(x.orig === item.orig && x.tran === item.tran && (x.mode || 'en-sw') === (item.mode || 'en-sw')));
+    list.unshift({ orig: item.orig, tran: item.tran, mode: item.mode || 'en-sw', savedAt: Date.now() });
+    safeWrite(key, list.slice(0, MAX_HISTORY));
+    renderList(key, key === STORAGE.history ? 'historyContainer' : 'favContainer');
+  }
+  function updateFavoriteIcon() {
+    const exists = safeRead(STORAGE.favorites).some(x => x.orig === currentTranslation.orig && x.tran === currentTranslation.tran);
+    $('favIcon').textContent = exists ? 'star' : 'star_border';
+    $('favIcon').style.color = exists ? 'var(--accent)' : 'var(--text-sub)';
+    $('favBtn').setAttribute('aria-pressed', String(exists));
+  }
+  function updateUI() {
+    const t = ui[currentUILang];
+    document.documentElement.lang = currentUILang;
+    $('userInput').placeholder = t.placeholder;
+    if (defaultResult($('resultText').textContent.trim())) setResult(t.resultDefault);
+    $('translateBtn').querySelector('span').textContent = t.btnTranslate;
+    $('textHist').textContent = t.history; $('textFav').textContent = t.favs;
+    $('btnClearFav').textContent = t.clearAll; $('btnClearHist').textContent = t.clearHist;
+    $('textPrivacy').textContent = t.privacyLink; $('confirmTitle').textContent = t.confirmTitle;
+    $('confirmMsg').textContent = t.confirmMsg; $('btnCancel').textContent = t.btnCancel;
+    $('confirmBtn').textContent = t.btnDelete; $('phraseLabel').textContent = t.phraseLabel;
+    $('privacyContent').replaceChildren();
+    const title = document.createElement('h2'); title.id = 'policyTitle'; title.textContent = t.policyTitle;
+    $('privacyContent').appendChild(title);
+    const body = document.createElement('div'); body.innerHTML = t.policy;
+    $('privacyContent').appendChild(body);
+    const close = document.createElement('button'); close.type = 'button'; close.className = 'btn-main'; close.style.width = '100%'; close.style.marginTop = '18px'; close.textContent = t.understood;
+    close.addEventListener('click', () => closeModal('pModal'));
+    $('privacyContent').appendChild(close);
+    renderPhrases(); renderList(STORAGE.history, 'historyContainer'); renderList(STORAGE.favorites, 'favContainer');
+  }
+  function openModal(id) { $(id).classList.add('open'); }
+  function closeModal(id) { $(id).classList.remove('open'); }
+  async function translate() {
+    const input = $('userInput').value.trim();
+    const mode = $('langOption').value;
+    const t = ui[currentUILang];
+    if (!input) { showStatus(t.emptyInput, true); $('userInput').focus(); return; }
+    if (input.length > 500) { showStatus(currentUILang === 'sw' ? 'Maandishi yamezidi herufi 500.' : 'Text exceeds 500 characters.', true); return; }
+
+    const requestId = ++translationRequestId;
+    const btn = $('translateBtn');
+    btn.disabled = true; setResult(t.translating); showStatus('');
+    const [source, target] = mode.split('-');
+    try {
+      // This public web endpoint is not a guaranteed production API.
+      // For a production release, replace this request with your own backend
+      // connected to an officially supported translation API.
+      const url = new URL('https://translate.googleapis.com/translate_a/single');
+      url.searchParams.set('client', 'gtx');
+      url.searchParams.set('sl', source);
+      url.searchParams.set('tl', target);
+      url.searchParams.set('dt', 't');
+      url.searchParams.set('q', input);
+      const response = await fetch(url.toString(), { method: 'GET', headers: { 'Accept': 'application/json' } });
+      if (!response.ok) throw new Error('Translation service unavailable');
+      const data = await response.json();
+      const translated = Array.isArray(data?.[0]) ? data[0].map(part => typeof part?.[0] === 'string' ? part[0] : '').join('') : '';
+      if (!translated.trim()) throw new Error('Empty translation');
+      if (requestId !== translationRequestId) return;
+      setResult(translated);
+      currentTranslation = { orig: input, tran: translated, mode };
+      saveItem(STORAGE.history, currentTranslation);
+      updateFavoriteIcon();
+      showStatus('');
+    } catch (_) {
+      if (requestId !== translationRequestId) return;
+      setResult(t.errorText);
+      showStatus(currentUILang === 'sw' ? 'Huduma ya tafsiri haipatikani kwa sasa.' : 'The translation service is currently unavailable.', true);
+    } finally {
+      if (requestId === translationRequestId) btn.disabled = false;
+    }
+  }
+  function clearFields() {
+    translationRequestId++;
+    $('translateBtn').disabled = false;
+    $('userInput').value = ''; setResult(ui[currentUILang].resultDefault);
+    currentTranslation = { orig: '', tran: '', mode: $('langOption').value };
+    updateCharCount(); updateFavoriteIcon(); showStatus(''); $('userInput').focus();
+  }
+  async function copyTranslation() {
+    const text = $('resultText').textContent.trim();
+    if (!text || defaultResult(text)) return;
+    try {
+      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+      else {
+        const temp = document.createElement('textarea'); temp.value = text; temp.setAttribute('readonly', '');
+        temp.style.position = 'fixed'; temp.style.opacity = '0'; document.body.appendChild(temp); temp.select();
+        const ok = document.execCommand('copy'); temp.remove(); if (!ok) throw new Error('Copy failed');
+      }
+      $('copyIcon').textContent = 'done'; showStatus(ui[currentUILang].copied);
+      window.setTimeout(() => { $('copyIcon').textContent = 'content_copy'; }, 1200);
+    } catch (_) { showStatus(currentUILang === 'sw' ? 'Imeshindikana kunakili maandishi.' : 'Could not copy text.', true); }
+  }
+  function swapLanguages() {
+    const hasTranslation = currentTranslation.orig && currentTranslation.tran && !defaultResult($('resultText').textContent.trim());
+    $('langOption').value = $('langOption').value === 'en-sw' ? 'sw-en' : 'en-sw';
+    if (hasTranslation) {
+      $('userInput').value = currentTranslation.tran;
+      setResult(currentTranslation.orig);
+      currentTranslation = { orig: currentTranslation.tran, tran: currentTranslation.orig, mode: $('langOption').value };
+    }
+    updateCharCount(); updateFavoriteIcon(); showStatus('');
+  }
+
+  $('uiLang').addEventListener('change', () => { currentUILang = $('uiLang').value; updateUI(); showStatus(''); });
+  $('userInput').addEventListener('input', updateCharCount);
+  $('translateBtn').addEventListener('click', translate);
+  $('swapBtn').addEventListener('click', swapLanguages);
+  $('clearBtn').addEventListener('click', clearFields);
+  $('copyBtn').addEventListener('click', copyTranslation);
+  $('favBtn').addEventListener('click', () => {
+    if (!currentTranslation.orig || !currentTranslation.tran || defaultResult($('resultText').textContent.trim())) {
+      showStatus(currentUILang === 'sw' ? 'Tafsiri kwanza kabla ya kuhifadhi kipendwa.' : 'Translate something before saving it as a favorite.', true); return;
+    }
+    const list = safeRead(STORAGE.favorites);
+    const exists = list.some(x => x.orig === currentTranslation.orig && x.tran === currentTranslation.tran);
+    if (exists) {
+      safeWrite(STORAGE.favorites, list.filter(x => !(x.orig === currentTranslation.orig && x.tran === currentTranslation.tran)));
+    } else saveItem(STORAGE.favorites, currentTranslation);
+    renderList(STORAGE.favorites, 'favContainer'); updateFavoriteIcon();
+  });
+  $('btnClearHist').addEventListener('click', () => openModal('confirmDialog'));
+  $('btnClearFav').addEventListener('click', () => {
+    if (window.confirm(currentUILang === 'sw' ? 'Ufute vipendwa vyote?' : 'Delete all favorites?')) {
+      try { localStorage.removeItem(STORAGE.favorites); } catch (_) {}
+      renderList(STORAGE.favorites, 'favContainer'); updateFavoriteIcon();
+    }
+  });
+  $('btnCancel').addEventListener('click', () => closeModal('confirmDialog'));
+  $('confirmBtn').addEventListener('click', () => {
+    try { localStorage.removeItem(STORAGE.history); } catch (_) {}
+    renderList(STORAGE.history, 'historyContainer'); closeModal('confirmDialog');
+  });
+  $('privacyTop').addEventListener('click', () => openModal('pModal'));
+  $('privacyBottom').addEventListener('click', () => openModal('pModal'));
+  ['pModal', 'confirmDialog'].forEach(id => {
+    $(id).addEventListener('click', event => { if (event.target === $(id)) closeModal(id); });
+  });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal('pModal'); closeModal('confirmDialog'); } });
+
+  currentUILang = $('uiLang').value;
+  updateUI(); updateCharCount(); updateFavoriteIcon();
+})();
+</script>
+</body>
+</html>
